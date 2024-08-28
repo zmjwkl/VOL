@@ -2,7 +2,6 @@ package main
 
 import (
 	"VOL/handler"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -11,8 +10,8 @@ func main() {
 
 	// 定义路由和处理函数
 	router.POST("/k8s/command", handler.HandleK8sCommand)
-	router.GET("/k8s/vcjob/status", handler.HandleVcjobStatus)
-
+	router.GET("/k8s/node", handler.Handler_get_node)
+	
 	// 启动服务器
-	router.Run(":10010")
+	router.Run(":8081")
 }
