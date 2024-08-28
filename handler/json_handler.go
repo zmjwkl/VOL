@@ -2,9 +2,8 @@ package handler
 
 import (
 	"VOL/k8s"
-	"net/http"
-
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 type K8sCommand struct {
@@ -33,16 +32,23 @@ func HandleK8sCommand(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"output": output})
 }
 
-func HandleVcjobStatus(c *gin.Context) {
-	var cmd K8sCommand
-	if cmd.Name == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "vcjob_name is required"})
-		return
+func Handler_get_node(c *gin.Context) {
+	username := c.DefaultQuery("username", "all")
+	if username == "all" {
+		// 执行 Kubernetes 命令
+		output, err := k8s.ExecuteCommand_getnodes()
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "output": output})
+			return
+		}
+		c.String(http.StatusOK, output)
+	} else {
+		output, err := k8s.ExecuteCommand_getnode(username)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "output": output})
+			return
+		}
+		c.String(http.StatusOK, output)
 	}
-	status, err := k8s.GetVcjobStatus(cmd.Name, cmd.Namespace)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"status": status})
+
 }
