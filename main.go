@@ -12,5 +12,5 @@ func main() {
 	router.POST("/k8s/command", handler.HandleK8sCommand)
 
 	// 启动服务器
-	router.Run(":10010")
+	router.Run(":8081")
 }
